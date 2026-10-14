@@ -1,0 +1,59 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c332cec8402b6744cae9fb654c8579c7, type: 3}
+  m_Name: DinerConfig
+  m_EditorClassIdentifier: Crossroads.Runtime::Crossroads.Diner.DinerConfig
+  theme: {fileID: 11400000, guid: a2c66624b8a207745865c1735bdfbb62, type: 2}
+  ingredients:
+  - {fileID: 11400000, guid: c110be27cf4b10d46a4cca9e1caf18e6, type: 2}
+  - {fileID: 11400000, guid: 7f8e2ac49106f4e40b9608ec43626c65, type: 2}
+  - {fileID: 11400000, guid: 9f33b637b0f899e4190d3d7d80f6c49a, type: 2}
+  tools:
+  - {fileID: 11400000, guid: 65b186d69994f09499fbd5f929cc97d0, type: 2}
+  - {fileID: 11400000, guid: a973023f12ce2e0438b9b3ae587098eb, type: 2}
+  - {fileID: 11400000, guid: e4d83f85024f022418b34715e9123f98, type: 2}
+  monsters:
+  - {fileID: 11400000, guid: 961bd6c2a5048f242a20c4b707dc8c0d, type: 2}
+  - {fileID: 11400000, guid: 33a382f7a77caea43ae7b562e470b786, type: 2}
+  - {fileID: 11400000, guid: 6faf45259e8c6054b9846167517a4fe8, type: 2}
+  recipes:
+  - {fileID: 11400000, guid: e873092100181ff4786edd7d43ae8d26, type: 2}
+  - {fileID: 11400000, guid: 020bc452f4ba1c24887caf403b496c41, type: 2}
+  - {fileID: 11400000, guid: 66c6ab885c1d4854ca80f03efed1ddb7, type: 2}
+  openingGuests:
+  - species: {fileID: 11400000, guid: 961bd6c2a5048f242a20c4b707dc8c0d, type: 2}
+    recipe: {fileID: 11400000, guid: 020bc452f4ba1c24887caf403b496c41, type: 2}
+  - species: {fileID: 11400000, guid: 33a382f7a77caea43ae7b562e470b786, type: 2}
+    recipe: {fileID: 11400000, guid: 66c6ab885c1d4854ca80f03efed1ddb7, type: 2}
+  - species: {fileID: 11400000, guid: 6faf45259e8c6054b9846167517a4fe8, type: 2}
+    recipe: {fileID: 11400000, guid: e873092100181ff4786edd7d43ae8d26, type: 2}
+  waitingSlots: 4
+  capturedSlots: 2
+  traySlots: 2
+  startingStock: 2
+  shiftDuration: 300
+  processingSeconds: 3
+  captureCooldown: 0.6
+  fullAreaRefillDelay: 1
+  turnSeconds: 0.35
+  pushSeconds: 0.2
+  randomSeed: 137
+  phases:
+  - startsAt: 0
+    interval: 10
+    patience: 50
+  - startsAt: 60
+    interval: 8
+    patience: 45
+  - startsAt: 180
+    interval: 6
+    patience: 40

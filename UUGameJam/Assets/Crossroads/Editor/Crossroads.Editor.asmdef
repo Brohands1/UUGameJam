@@ -1,0 +1,7 @@
+{
+  "name": "Crossroads.Editor",
+  "rootNamespace": "Crossroads.Diner.Editor",
+  "references": ["Crossroads.Runtime", "UnityEngine.UI"],
+  "includePlatforms": ["Editor"],
+  "autoReferenced": true
+}

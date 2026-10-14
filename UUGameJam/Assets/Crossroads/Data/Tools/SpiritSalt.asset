@@ -1,0 +1,21 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3fff42f30f7f6464c90289e2bb4e79ac, type: 3}
+  m_Name: SpiritSalt
+  m_EditorClassIdentifier: Crossroads.Runtime::Crossroads.Diner.ToolDefinition
+  id: SpiritSalt
+  displayName: Spirit salt
+  description: Replace icon or visualPrefab freely; keep the stable gameplay ID.
+  icon: {fileID: 0}
+  visualPrefab: {fileID: 8247856321103785913, guid: dd627e64b2bef7f4b96f3f5615ba7211, type: 3}
+  placeholder: 5
+  tint: {r: 0.5, g: 0.73, b: 0.76, a: 1}

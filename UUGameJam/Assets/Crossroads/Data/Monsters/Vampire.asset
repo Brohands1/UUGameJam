@@ -1,0 +1,24 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8943cbb906dce1f47b02990a8b15e391, type: 3}
+  m_Name: Vampire
+  m_EditorClassIdentifier: Crossroads.Runtime::Crossroads.Diner.MonsterDefinition
+  id: Vampire
+  displayName: Vampire
+  description: Replace icon or visualPrefab freely; keep the stable gameplay ID.
+  icon: {fileID: 0}
+  visualPrefab: {fileID: 82425890353468430, guid: c8a54569af766574a87c79f446f69799, type: 3}
+  placeholder: 0
+  tint: {r: 0.46, g: 0.19, b: 0.24, a: 1}
+  weakness: {fileID: 11400000, guid: 65b186d69994f09499fbd5f929cc97d0, type: 2}
+  ingredient: {fileID: 11400000, guid: c110be27cf4b10d46a4cca9e1caf18e6, type: 2}
+  ingredientYield: 2

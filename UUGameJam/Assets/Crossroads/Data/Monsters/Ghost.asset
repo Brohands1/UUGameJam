@@ -1,0 +1,24 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8943cbb906dce1f47b02990a8b15e391, type: 3}
+  m_Name: Ghost
+  m_EditorClassIdentifier: Crossroads.Runtime::Crossroads.Diner.MonsterDefinition
+  id: Ghost
+  displayName: Ghost
+  description: Replace icon or visualPrefab freely; keep the stable gameplay ID.
+  icon: {fileID: 0}
+  visualPrefab: {fileID: 3753143257208359079, guid: 1b8a0303da0c1334cb3ace5ec3284459, type: 3}
+  placeholder: 2
+  tint: {r: 0.65, g: 0.83, b: 0.73, a: 1}
+  weakness: {fileID: 11400000, guid: e4d83f85024f022418b34715e9123f98, type: 2}
+  ingredient: {fileID: 11400000, guid: 9f33b637b0f899e4190d3d7d80f6c49a, type: 2}
+  ingredientYield: 2

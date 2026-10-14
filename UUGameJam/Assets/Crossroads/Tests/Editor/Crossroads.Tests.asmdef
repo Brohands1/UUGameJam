@@ -1,0 +1,8 @@
+{
+  "name": "Crossroads.Tests",
+  "rootNamespace": "Crossroads.Diner.Tests",
+  "references": ["Crossroads.Runtime", "Crossroads.Editor", "UnityEngine.UI"],
+  "includePlatforms": ["Editor"],
+  "optionalUnityReferences": ["TestAssemblies"],
+  "autoReferenced": false
+}

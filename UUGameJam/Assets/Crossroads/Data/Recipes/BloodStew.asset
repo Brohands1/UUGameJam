@@ -1,0 +1,25 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a57239142abd24444a117d4b6299d011, type: 3}
+  m_Name: BloodStew
+  m_EditorClassIdentifier: Crossroads.Runtime::Crossroads.Diner.RecipeDefinition
+  id: BloodStew
+  displayName: Blood Stew
+  description: Replace icon or visualPrefab freely; keep the stable gameplay ID.
+  icon: {fileID: 0}
+  visualPrefab: {fileID: 286194456468704085, guid: 32cdcbcffe869944aa5c766994d24e00, type: 3}
+  placeholder: 9
+  tint: {r: 0.68, g: 0.26, b: 0.19, a: 1}
+  first: {fileID: 11400000, guid: c110be27cf4b10d46a4cca9e1caf18e6, type: 2}
+  second: {fileID: 11400000, guid: 7f8e2ac49106f4e40b9608ec43626c65, type: 2}
+  price: 12
+  cookSeconds: 4

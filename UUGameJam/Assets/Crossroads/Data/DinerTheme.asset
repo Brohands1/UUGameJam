@@ -1,0 +1,38 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7fcc2b057bb26a04bb66ce3b18273d20, type: 3}
+  m_Name: DinerTheme
+  m_EditorClassIdentifier: Crossroads.Runtime::Crossroads.Diner.DinerTheme
+  bodyFont: {fileID: 12800000, guid: f50873f22047d514e988af01db6fd674, type: 3}
+  titleFont: {fileID: 12800000, guid: f50873f22047d514e988af01db6fd674, type: 3}
+  frontBackground: {fileID: 0}
+  kitchenBackground: {fileID: 0}
+  slotSprite: {fileID: 0}
+  panelSprite: {fileID: 0}
+  frontDecorationPrefab: {fileID: 0}
+  kitchenDecorationPrefab: {fileID: 0}
+  processorIcon: {fileID: 0}
+  potIcon: {fileID: 0}
+  ambience: {fileID: 0}
+  arrival: {fileID: 0}
+  capture: {fileID: 0}
+  invalid: {fileID: 0}
+  processed: {fileID: 0}
+  cooked: {fileID: 0}
+  paid: {fileID: 0}
+  walkout: {fileID: 0}
+  defaultVolume: 0.55
+  ink: {r: 0.06, g: 0.1, b: 0.12, a: 1}
+  cream: {r: 0.94, g: 0.88, b: 0.73, a: 1}
+  gold: {r: 0.87, g: 0.65, b: 0.32, a: 1}
+  mint: {r: 0.49, g: 0.76, b: 0.68, a: 1}
+  danger: {r: 0.85, g: 0.36, b: 0.32, a: 1}

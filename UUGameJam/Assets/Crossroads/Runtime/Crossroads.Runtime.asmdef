@@ -1,0 +1,6 @@
+{
+  "name": "Crossroads.Runtime",
+  "rootNamespace": "Crossroads.Diner",
+  "references": ["Unity.InputSystem", "UnityEngine.UI"],
+  "autoReferenced": true
+}
