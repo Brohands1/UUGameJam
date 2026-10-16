@@ -15,8 +15,8 @@ MonoBehaviour:
   id: Ghost
   displayName: Ghost
   description: Replace icon or visualPrefab freely; keep the stable gameplay ID.
-  icon: {fileID: 0}
-  visualPrefab: {fileID: 3753143257208359079, guid: 1b8a0303da0c1334cb3ace5ec3284459, type: 3}
+  icon: {fileID: 21300000, guid: 8e5f34be17f82914d94a8adf0b61c3cf, type: 3}
+  visualPrefab: {fileID: 0}
   placeholder: 2
   tint: {r: 0.65, g: 0.83, b: 0.73, a: 1}
   weakness: {fileID: 11400000, guid: e4d83f85024f022418b34715e9123f98, type: 2}

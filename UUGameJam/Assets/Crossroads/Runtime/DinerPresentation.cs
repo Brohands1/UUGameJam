@@ -101,7 +101,7 @@ namespace Crossroads.Diner
         DinerHitArea Button(Transform parent,string text,string command,float x,float y,float w,float h,bool primary=false)
         {
             var r=Box(parent,text,x,y,w,h,primary ? Theme.gold : panel,Theme.panelSprite);
-            Label(r,"Label",text,8,0,w-16,h,21,primary ? Theme.ink : Theme.cream,TextAnchor.MiddleCenter,true);
+            Label(r,"Label",text,8,0,w-16,h,26,primary ? Theme.ink : Theme.cream,TextAnchor.MiddleCenter,true);
             var area=Hit(r,false,PayloadType.Tool,0); area.command=command; return area;
         }
         Image Progress(Transform root,float x,float y,float w,Color color)
@@ -135,6 +135,24 @@ namespace Crossroads.Diner
             var prefab=isKitchen ? Theme.kitchenDecorationPrefab : Theme.frontDecorationPrefab;
             if(prefab!=null) Instantiate(prefab,parent,false);
         }
+        void BuildDiscard(Transform parent,string name,float x,float y,float width,float height)
+        {
+            var waste=Box(parent,name,x,y,width,height,new Color(.24f,.18f,.17f));
+            bool hasIcon=Theme.trashIcon!=null;
+            if(hasIcon)
+            {
+                var image=Box(waste,"Trash can",8,10,88,height-20,Color.white).GetComponent<Image>();
+                image.sprite=Theme.trashIcon;
+                image.type=Image.Type.Simple;
+                image.preserveAspect=true;
+            }
+            float textX=hasIcon ? 102 : 8;
+            float textWidth=width-textX-8;
+            Label(waste,"Discard title","DISCARD",textX,18,textWidth,36,22,Theme.cream,TextAnchor.MiddleCenter,true);
+            Label(waste,"Discard hint","Drop dish",textX,57,textWidth,height-63,20,Theme.cream,TextAnchor.UpperCenter);
+            Hit(waste,false,PayloadType.Dish,0,true,TargetType.Waste);
+        }
+
         void BuildFront()
         {
             Backdrop(front,false);
@@ -153,11 +171,11 @@ namespace Crossroads.Diner
                 g.dish=Visual(bubble,"Recipe icon",12,14,75,75);
                 g.recipe=Label(bubble,"Recipe","",92,12,cell-116,55,18,Theme.ink,TextAnchor.MiddleLeft,true);
                 g.price=Label(bubble,"Price","",92,66,cell-116,28,22,new Color(.46f,.3f,.15f),TextAnchor.MiddleLeft,true);
-                g.ingredients=Label(bubble,"Ingredients","",12,106,cell-34,25,14,Theme.ink,TextAnchor.MiddleCenter);
+                g.ingredients=Label(bubble,"Ingredients","",12,106,cell-34,27,20,Theme.ink,TextAnchor.MiddleCenter);
                 var details=Box(front,"Details "+(i+1),x-5,586,cell-10,119,panel,Theme.panelSprite); g.detailsRoot=details.gameObject;
                 g.patience=Label(details,"Patience","",13,7,cell-35,26,17,Theme.gold,TextAnchor.MiddleLeft,true);
                 g.patienceFill=Progress(details,13,36,cell-36,Theme.mint);
-                g.details=Label(details,"Weakness and yield","",13,52,cell-36,55,14,Theme.cream);
+                g.details=Label(details,"Weakness and yield","",13,52,cell-36,60,18,Theme.cream);
                 bubble.gameObject.SetActive(false); details.gameObject.SetActive(false);
             }
             var counter=Box(front,"Counter work surface",0,612,1600,214,wood); counterItems=counter.gameObject;
@@ -168,14 +186,12 @@ namespace Crossroads.Diner
             for(int i=0;i<tools.Length;i++)
             {
                 var r=Box(counter,"Tool "+i,48+i*tw,53,tw-12,134,panel,Theme.slotSprite);
-                var item=new ItemWidget { visual=Visual(r,"Tool art",(tw-12-66)/2,5,66,78),label=Label(r,"Name",config.tools[i].displayName,4,88,tw-20,33,16,Theme.cream,TextAnchor.MiddleCenter,true) };
+                var item=new ItemWidget { visual=Visual(r,"Tool art",(tw-12-66)/2,5,66,78),label=Label(r,"Name",config.tools[i].displayName,4,88,tw-20,36,20,Theme.cream,TextAnchor.MiddleCenter,true) };
                 item.hit=Hit(r,true,PayloadType.Tool,i,false,TargetType.Guest,"Hold left mouse, then W to use on a guest."); tools[i]=item;
             }
             Label(counter,"Tray heading","PASS  /  FINISHED DISHES",637,18,500,25,15,Theme.gold,TextAnchor.MiddleLeft,true);
             frontTray=BuildTray(counter,633,53,550,false);
-            var waste=Box(counter,"Discard",1282,66,230,114,new Color(.24f,.18f,.17f));
-            Label(waste,"Waste text","DISCARD\nDrop a finished dish",5,4,220,102,18,new Color(.84f,.61f,.49f),TextAnchor.MiddleCenter);
-            Hit(waste,false,PayloadType.Dish,0,true,TargetType.Waste);
+            BuildDiscard(counter,"Discard",1282,66,230,114);
             serviceHint=Label(front,"Service instruction","HOLD + RELEASE ON A GUEST     /     S - Return to the counter     /     A or D - Turn to kitchen",210,737,1180,43,18,Theme.gold,TextAnchor.MiddleCenter).gameObject;
             serviceHint.SetActive(false);
         }
@@ -185,7 +201,7 @@ namespace Crossroads.Diner
             for(int i=0;i<values.Length;i++)
             {
                 var r=Box(root,"Tray slot "+(i+1),x+i*cell,y,cell-14,134,panel,Theme.slotSprite);
-                var v=new ItemWidget { visual=Visual(r,"Dish",10,15,82,87),label=Label(r,"Dish name","EMPTY",101,22,cell-125,62,17,Theme.cream,TextAnchor.MiddleLeft,true),sublabel=Label(r,"Slot label","PASS 0"+(i+1),101,89,cell-125,26,12,muted) };
+                var v=new ItemWidget { visual=Visual(r,"Dish",10,15,82,87),label=Label(r,"Dish name","EMPTY",101,22,cell-125,62,20,Theme.cream,TextAnchor.MiddleLeft,true),sublabel=Label(r,"Slot label","PASS 0"+(i+1),101,89,cell-125,27,18,muted) };
                 v.hit=Hit(r,true,PayloadType.Dish,i,true,TargetType.Tray,inKitchen ? "Shared with the front counter." : "Hold a dish, keep holding, then press W."); values[i]=v;
             }
             return values;
@@ -222,15 +238,15 @@ namespace Crossroads.Diner
             Label(slotTwo,"Slot two","+\n2",0,4,58,65,24,Theme.cream,TextAnchor.MiddleCenter);
             Hit(slotTwo,false,PayloadType.Ingredient,0,true,TargetType.Pot);
             var book=Box(kitchen,"Public recipe book",1130,245,422,292,Theme.cream,Theme.panelSprite);
-            Label(book,"Heading","THE HOUSE MENU",23,12,377,32,20,Theme.ink,TextAnchor.MiddleLeft,true);
-            Label(book,"Public reference","Recipes only - remember your guests",23,44,377,28,14,new Color(.39f,.41f,.32f));
+            Label(book,"Heading","THE HOUSE MENU",23,12,377,36,26,Theme.ink,TextAnchor.MiddleLeft,true);
+            Label(book,"Public reference","Recipes and ingredients",23,51,377,28,20,new Color(.39f,.41f,.32f));
             float rh=202f/config.recipes.Length;
             recipeIcons=new DinerVisual[config.recipes.Length];
             for(int i=0;i<config.recipes.Length;i++)
             {
                 var recipe=config.recipes[i]; recipeIcons[i]=Visual(book,"Recipe "+recipe.id,24,83+i*rh,57,55);
-                Label(book,"Name "+recipe.id,recipe.displayName+"  $"+recipe.price,97,80+i*rh,303,28,18,Theme.ink,TextAnchor.MiddleLeft,true);
-                Label(book,"Pair "+recipe.id,recipe.first.displayName+" + "+recipe.second.displayName+"   /   "+recipe.cookSeconds+"s",97,108+i*rh,303,26,14,new Color(.37f,.39f,.31f));
+                Label(book,"Name "+recipe.id,recipe.displayName+"  $"+recipe.price,97,80+i*rh,303,29,22,Theme.ink,TextAnchor.MiddleLeft,true);
+                Label(book,"Pair "+recipe.id,recipe.first.displayName+" + "+recipe.second.displayName+"   /   "+recipe.cookSeconds+"s",97,108+i*rh,303,29,20,new Color(.25f,.28f,.22f));
             }
             var bottom=Box(kitchen,"Kitchen worktop",0,564,1600,262,wood); Box(bottom,"Brass edge",0,0,1600,5,Theme.gold);
             Label(bottom,"Stock heading","PANTRY  /  DRAG ONE PORTION",51,18,550,28,15,Theme.gold,TextAnchor.MiddleLeft,true);
@@ -243,9 +259,7 @@ namespace Crossroads.Diner
             }
             Label(bottom,"Pass heading","SHARED PASS  /  SERVE AT THE FRONT",660,18,570,28,15,Theme.gold,TextAnchor.MiddleLeft,true);
             kitchenTray=BuildTray(bottom,656,65,596,true);
-            var waste=Box(bottom,"Waste",1292,66,222,134,new Color(.24f,.18f,.17f));
-            Label(waste,"Label","DISCARD\nDrop a finished dish",8,8,206,118,18,new Color(.84f,.61f,.49f),TextAnchor.MiddleCenter);
-            Hit(waste,false,PayloadType.Dish,0,true,TargetType.Waste);
+            BuildDiscard(bottom,"Waste",1292,66,222,134);
             kitchen.gameObject.SetActive(false);
         }
         void BuildHud()
@@ -254,7 +268,7 @@ namespace Crossroads.Diner
             Label(header,"Brand","CROSSROADS",45,15,400,39,33,Theme.cream,TextAnchor.MiddleLeft,true);
             Label(header,"Subbrand","D I N E R    /    THE NIGHT SHIFT",47,57,400,25,13,Theme.gold);
             viewText=Label(header,"Current view","01  /  FRONT COUNTER",480,25,370,31,20,Theme.cream,TextAnchor.MiddleLeft,true);
-            stockText=Label(header,"Stock","",480,57,490,25,14,muted);
+            stockText=Label(header,"Stock","",480,57,490,28,20,Theme.cream);
             timeText=Label(header,"Clock","05:00",1015,10,171,49,36,Theme.cream,TextAnchor.MiddleCenter,true);
             timeFill=Progress(header,1024,68,154,Theme.gold);
             revenueText=Label(header,"Revenue","$0",1230,9,163,49,37,Theme.gold,TextAnchor.MiddleCenter,true);
@@ -262,32 +276,32 @@ namespace Crossroads.Diner
             Button(header,"II  ESC","pause",1430,26,115,48);
             var footer=Box(layoutRoot,"Persistent hints",0,825,1600,75,Theme.ink);
             helpText=Label(footer,"Controls","",43,5,1080,29,18,Theme.cream);
-            noticeText=Label(footer,"Feedback","Open the diner when you are ready.",43,37,1100,28,15,Theme.gold);
-            kitchenStatus=Label(footer,"Station summary","",1140,5,414,61,14,muted,TextAnchor.MiddleRight);
+            noticeText=Label(footer,"Feedback","Open the diner when you are ready.",43,37,1100,30,20,Theme.gold);
+            kitchenStatus=Label(footer,"Station summary","",1140,5,414,64,18,Theme.cream,TextAnchor.MiddleRight);
         }
         void BuildMenus()
         {
             var ready=Box(layoutRoot,"Ready overlay",0,0,1600,900,new Color(.04f,.08f,.09f,.96f)); readyPanel=ready.gameObject;
-            Label(ready,"Edition","A SUPERNATURAL RESTAURANT",360,82,880,38,16,Theme.gold,TextAnchor.MiddleCenter);
+            Label(ready,"Edition","A SUPERNATURAL RESTAURANT",360,82,880,38,22,Theme.gold,TextAnchor.MiddleCenter);
             Label(ready,"Title","Crossroads Diner",280,132,1040,98,72,Theme.cream,TextAnchor.MiddleCenter,true);
             Label(ready,"Tagline","Serve some. Hunt some. Turn monsters into meals.",250,238,1100,48,24,muted,TextAnchor.MiddleCenter);
             string[] headings={"01   CHECK & CHOOSE","02   CARRY & CAPTURE","03   PROCESS & COOK"};
-            string[] bodies={"W moves closer to reveal orders.\nS returns to the counter.\nServe matching dishes to get paid.","Hold left mouse on a tool or dish.\nKeep holding and press W.\nRelease on a matching guest.","A / D turns to the kitchen.\nDrag captures to the table.\nDrag two ingredients into the pot."};
+            string[] bodies={"W: Read guest orders.\nS: Return to the counter.\nServe the requested dish.","Hold left mouse to pick up.\nKeep holding and press W.\nRelease over a guest.","A / D: Turn to the kitchen.\nDrag captures to the table.\nAdd two ingredients to cook."};
             ArtKind[] arts={ArtKind.Ghost,ArtKind.Garlic,ArtKind.Pot};
             for(int i=0;i<3;i++)
             {
-                var card=Box(ready,"Instructions "+i,178+i*426,337,392,300,panel,Theme.panelSprite);
-                Art(card,"Illustration",arts[i],154,18,82,99,Theme.mint);
-                Label(card,"Heading",headings[i],15,133,362,38,20,Theme.gold,TextAnchor.MiddleCenter,true);
-                Label(card,"Description",bodies[i],20,181,352,100,19,Theme.cream,TextAnchor.UpperCenter);
+                var card=Box(ready,"Instructions "+i,178+i*426,337,392,332,panel,Theme.panelSprite);
+                Art(card,"Illustration",arts[i],154,16,82,78,Theme.mint);
+                Label(card,"Heading",headings[i],15,111,362,42,22,Theme.gold,TextAnchor.MiddleCenter,true);
+                Label(card,"Description",bodies[i],20,166,352,150,24,Theme.cream,TextAnchor.UpperCenter);
             }
             Button(ready,"START SHIFT","start",591,692,418,70,true);
-            Label(ready,"Fine print","5 MINUTES  /  4 WAITING SEATS  /  EVERY GUEST IS A CHOICE",360,783,880,34,15,muted,TextAnchor.MiddleCenter);
-            Label(ready,"Cancellation","Right click cancels a held item. Esc pauses and cancels dragging.",360,831,880,30,15,muted,TextAnchor.MiddleCenter);
+            Label(ready,"Fine print","5 MINUTES  /  4 WAITING SEATS  /  EVERY GUEST IS A CHOICE",360,783,880,36,20,Theme.cream,TextAnchor.MiddleCenter);
+            Label(ready,"Cancellation","Right click cancels a held item. Esc pauses and cancels dragging.",360,831,880,34,20,Theme.cream,TextAnchor.MiddleCenter);
             var pause=Box(layoutRoot,"Pause overlay",0,0,1600,900,new Color(.03f,.06f,.07f,.94f)); pausePanel=pause.gameObject;
             Label(pause,"Title","On a short break",400,140,800,80,55,Theme.cream,TextAnchor.MiddleCenter,true);
-            Label(pause,"Pause status","All clocks are frozen. Reserved ingredients stay in the pot.",350,230,900,40,22,muted,TextAnchor.MiddleCenter);
-            Label(pause,"Controls","W   Check guests       S   Return to counter\nA / D   Turn left / right       Right click   Cancel drag\nHold left mouse + a view key to carry an item",360,310,880,120,24,Theme.cream,TextAnchor.MiddleCenter);
+            Label(pause,"Pause status","All clocks are paused. Ingredients stay in the pot.",350,230,900,46,26,Theme.cream,TextAnchor.MiddleCenter);
+            Label(pause,"Controls","W   Check guests       S   Return to counter\nA / D   Turn left / right       Right click   Cancel drag\nHold left mouse + a view key to carry an item",360,310,880,138,28,Theme.cream,TextAnchor.MiddleCenter);
             Button(pause,"-","quieter",550,487,70,50); Button(pause,"+","louder",980,487,70,50);
             volumeText=Label(pause,"Volume","VOLUME 55%",640,487,320,50,23,Theme.gold,TextAnchor.MiddleCenter);
             Button(pause,"RESUME SHIFT","resume",570,599,460,66,true);
@@ -296,9 +310,9 @@ namespace Crossroads.Diner
             Label(results,"Eyebrow","THE LANTERNS ARE OUT",400,74,800,38,17,Theme.gold,TextAnchor.MiddleCenter);
             Label(results,"Title","Shift complete",400,126,800,73,53,Theme.cream,TextAnchor.MiddleCenter,true);
             resultRevenue=Label(results,"Revenue","$0",500,211,600,108,85,Theme.gold,TextAnchor.MiddleCenter,true);
-            Label(results,"Revenue caption","TOTAL REVENUE",550,322,500,30,15,muted,TextAnchor.MiddleCenter);
+            Label(results,"Revenue caption","TOTAL REVENUE",550,322,500,36,22,Theme.cream,TextAnchor.MiddleCenter);
             resultStats=Label(results,"Statistics","",310,387,980,182,29,Theme.cream,TextAnchor.MiddleCenter);
-            resultTelemetry=Label(results,"Playtest metrics","",320,594,960,56,16,muted,TextAnchor.MiddleCenter);
+            resultTelemetry=Label(results,"Playtest metrics","",320,594,960,72,22,Theme.cream,TextAnchor.MiddleCenter);
             Button(results,"PLAY AGAIN","restart",570,697,460,70,true);
             Label(results,"Coda","At the crossroads, every guest is a choice.",370,802,860,40,22,Theme.gold,TextAnchor.MiddleCenter);
             results.gameObject.SetActive(false);
@@ -313,23 +327,23 @@ namespace Crossroads.Diner
             var tutorial=Box(layoutRoot,"Pause tutorial",0,0,1600,900,new Color(.03f,.06f,.07f,.98f));
             tutorialPanel=tutorial.gameObject;
             Label(tutorial,"Title","How to play",300,80,1000,77,54,Theme.cream,TextAnchor.MiddleCenter,true);
-            Label(tutorial,"Pause notice","Your shift is paused. Take your time.",300,169,1000,40,23,Theme.gold,TextAnchor.MiddleCenter);
+            Label(tutorial,"Pause notice","Your shift is paused. Take your time.",300,169,1000,44,26,Theme.gold,TextAnchor.MiddleCenter);
 
-            var controls=Box(tutorial,"Controls reference",70,249,470,431,panel,Theme.panelSprite);
-            Label(controls,"Heading","01  /  MOVE & CARRY",24,18,422,38,23,Theme.gold,TextAnchor.MiddleLeft,true);
-            Label(controls,"Keys","W     Move closer to see orders\nS      Return to the counter\nA / D     Turn left / right\n\nHold left mouse to pick up an item.\nKeep holding + W / S / A / D to carry it.\nRelease over a valid target to use it.\n\nRight click     Cancel and return item\nEsc     Back to the pause menu",24,84,422,317,20,Theme.cream,TextAnchor.UpperLeft);
+            var controls=Box(tutorial,"Controls reference",70,239,470,453,panel,Theme.panelSprite);
+            Label(controls,"Heading","01  /  MOVE & CARRY",24,18,422,42,24,Theme.gold,TextAnchor.MiddleLeft,true);
+            Label(controls,"Keys","W: Inspect guest orders\nS: Return to the counter\nA / D: Turn left / right\n\nHold left mouse to pick up.\nKeep holding + a move key\nto carry the item.\nRelease over a valid target.\nRight click: Return the item\nEsc: Back to pause",24,84,422,332,24,Theme.cream,TextAnchor.UpperLeft);
 
-            var loop=Box(tutorial,"Loop reference",565,249,470,431,panel,Theme.panelSprite);
-            Label(loop,"Heading","02  /  RUN THE DINER",24,18,422,38,23,Theme.gold,TextAnchor.MiddleLeft,true);
-            Label(loop,"Steps","1. W to inspect an order and its price.\n    S to pick up a dish or counter-item.\n\n2. Hold the item + W, then release on\n    the guest to serve or capture them.\n\n3. In the kitchen, drag a capture to the\n    table. Drag two ingredients to the pot.\n\n4. Cooking starts with a matching pair.\n    Take the finished dish to a guest.",24,84,422,317,20,Theme.cream,TextAnchor.UpperLeft);
+            var loop=Box(tutorial,"Loop reference",565,239,470,453,panel,Theme.panelSprite);
+            Label(loop,"Heading","02  /  RUN THE DINER",24,18,422,42,24,Theme.gold,TextAnchor.MiddleLeft,true);
+            Label(loop,"Steps","1. W: Read orders and prices.\n    S: Return to pick up items.\n\n2. Carry an item with W.\n    Drop it onto a guest.\n\n3. Captures go to the table.\n    Two ingredients go in the pot.\n\n4. Serve the finished dish.",24,84,422,332,24,Theme.cream,TextAnchor.UpperLeft);
 
-            var reference=Box(tutorial,"Public recipe reference",1060,249,470,431,Theme.cream,Theme.panelSprite);
-            Label(reference,"Heading","03  /  POCKET REFERENCE",24,18,422,38,23,Theme.ink,TextAnchor.MiddleLeft,true);
-            string recipes=string.Join("\n\n",config.recipes.Select(r=>r.displayName+": "+r.first.displayName+" + "+r.second.displayName));
-            Label(reference,"Weaknesses",string.Join("\n",config.monsters.Select(m=>m.displayName+" : "+m.weakness.displayName)),24,82,422,103,20,Theme.ink,TextAnchor.UpperLeft);
-            Label(reference,"Recipes",recipes,24,212,422,174,19,Theme.ink,TextAnchor.UpperLeft);
+            var reference=Box(tutorial,"Public recipe reference",1060,239,470,453,Theme.cream,Theme.panelSprite);
+            Label(reference,"Heading","03  /  POCKET REFERENCE",24,18,422,42,24,Theme.ink,TextAnchor.MiddleLeft,true);
+            string recipes=string.Join("\n\n",config.recipes.Select(r=>r.displayName+"\n"+r.first.displayName+" + "+r.second.displayName));
+            Label(reference,"Weaknesses",string.Join("\n",config.monsters.Select(m=>m.displayName+" : "+m.weakness.displayName)),24,76,422,114,22,Theme.ink,TextAnchor.UpperLeft);
+            Label(reference,"Recipes",recipes,24,206,422,220,22,Theme.ink,TextAnchor.UpperLeft);
 
-            Label(tutorial,"Tips","Orders are visible only up close. Return a reserved ingredient to its bin.\nFull pass? Serve or discard a dish; the pot keeps its finished dish warm.",190,699,1220,61,19,muted,TextAnchor.MiddleCenter);
+            Label(tutorial,"Tips","Orders are visible only up close. Return a reserved ingredient to its bin.\nFull pass? Serve or discard a dish; the pot keeps its finished dish warm.",190,711,1220,62,22,Theme.cream,TextAnchor.MiddleCenter);
             Button(tutorial,"BACK TO PAUSE","tutorial_back",570,795,460,62,true);
             tutorial.gameObject.SetActive(false);
         }

@@ -15,8 +15,8 @@ MonoBehaviour:
   id: SpectralStew
   displayName: Spectral Stew
   description: Replace icon or visualPrefab freely; keep the stable gameplay ID.
-  icon: {fileID: 0}
-  visualPrefab: {fileID: 7401903426533487706, guid: 094bc32022d1e6b4d96f5a47c68a14a5, type: 3}
+  icon: {fileID: 21300000, guid: 2fce395aa912bd54fb61212e88bc07e3, type: 3}
+  visualPrefab: {fileID: 0}
   placeholder: 15
   tint: {r: 0.41, g: 0.68, b: 0.55, a: 1}
   first: {fileID: 11400000, guid: 9f33b637b0f899e4190d3d7d80f6c49a, type: 2}

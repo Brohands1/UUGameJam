@@ -8,7 +8,7 @@ namespace Crossroads.Diner
         public Font titleFont;
         public Sprite frontBackground, kitchenBackground, slotSprite, panelSprite;
         public GameObject frontDecorationPrefab, kitchenDecorationPrefab;
-        public Sprite processorIcon, potIcon;
+        public Sprite processorIcon, potIcon, trashIcon;
         public AudioClip ambience, arrival, capture, invalid, processed, cooked, paid, walkout;
         [Range(0, 1)] public float defaultVolume = .55f;
         public Color ink = new Color(.06f,.1f,.12f);

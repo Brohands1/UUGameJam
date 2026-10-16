@@ -14,14 +14,14 @@ MonoBehaviour:
   m_EditorClassIdentifier: Crossroads.Runtime::Crossroads.Diner.DinerTheme
   bodyFont: {fileID: 12800000, guid: f50873f22047d514e988af01db6fd674, type: 3}
   titleFont: {fileID: 12800000, guid: f50873f22047d514e988af01db6fd674, type: 3}
-  frontBackground: {fileID: 0}
-  kitchenBackground: {fileID: 0}
+  frontBackground: {fileID: 21300000, guid: 13a229e85ce2b274095b92c98551045b, type: 3}
+  kitchenBackground: {fileID: 21300000, guid: d66fceb72fc9be941a356700c3c26d03, type: 3}
   slotSprite: {fileID: 0}
   panelSprite: {fileID: 0}
   frontDecorationPrefab: {fileID: 0}
   kitchenDecorationPrefab: {fileID: 0}
-  processorIcon: {fileID: 0}
-  potIcon: {fileID: 0}
+  processorIcon: {fileID: 21300000, guid: f1ff79c2005aacf438b5bccede4dea4d, type: 3}
+  potIcon: {fileID: 21300000, guid: 8964bc54b8d5d4743a8615cfae278476, type: 3}
   ambience: {fileID: 0}
   arrival: {fileID: 0}
   capture: {fileID: 0}

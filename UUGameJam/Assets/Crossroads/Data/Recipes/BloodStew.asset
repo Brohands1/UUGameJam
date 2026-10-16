@@ -15,8 +15,8 @@ MonoBehaviour:
   id: BloodStew
   displayName: Blood Stew
   description: Replace icon or visualPrefab freely; keep the stable gameplay ID.
-  icon: {fileID: 0}
-  visualPrefab: {fileID: 286194456468704085, guid: 32cdcbcffe869944aa5c766994d24e00, type: 3}
+  icon: {fileID: 21300000, guid: adaaaaa13edc623488b5456a53ab42eb, type: 3}
+  visualPrefab: {fileID: 0}
   placeholder: 9
   tint: {r: 0.68, g: 0.26, b: 0.19, a: 1}
   first: {fileID: 11400000, guid: c110be27cf4b10d46a4cca9e1caf18e6, type: 2}

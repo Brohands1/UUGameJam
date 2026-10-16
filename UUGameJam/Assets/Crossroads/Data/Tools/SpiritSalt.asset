@@ -15,7 +15,7 @@ MonoBehaviour:
   id: SpiritSalt
   displayName: Spirit salt
   description: Replace icon or visualPrefab freely; keep the stable gameplay ID.
-  icon: {fileID: 0}
-  visualPrefab: {fileID: 8247856321103785913, guid: dd627e64b2bef7f4b96f3f5615ba7211, type: 3}
+  icon: {fileID: 21300000, guid: 84fa0e4a312f3394cb14de0ed87bc13a, type: 3}
+  visualPrefab: {fileID: 0}
   placeholder: 5
   tint: {r: 0.5, g: 0.73, b: 0.76, a: 1}

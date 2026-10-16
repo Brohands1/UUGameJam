@@ -15,8 +15,8 @@ MonoBehaviour:
   id: Werewolf
   displayName: Werewolf
   description: Replace icon or visualPrefab freely; keep the stable gameplay ID.
-  icon: {fileID: 0}
-  visualPrefab: {fileID: 7692630285624650142, guid: 2661452472baa6e408d3799d03f8131f, type: 3}
+  icon: {fileID: 21300000, guid: 423f5f4c17fbeb04b87d3484e43aa486, type: 3}
+  visualPrefab: {fileID: 0}
   placeholder: 1
   tint: {r: 0.57, g: 0.48, b: 0.34, a: 1}
   weakness: {fileID: 11400000, guid: a973023f12ce2e0438b9b3ae587098eb, type: 2}

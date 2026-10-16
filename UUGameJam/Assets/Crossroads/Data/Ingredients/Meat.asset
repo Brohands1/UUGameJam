@@ -15,7 +15,7 @@ MonoBehaviour:
   id: Meat
   displayName: Meat
   description: Replace icon or visualPrefab freely; keep the stable gameplay ID.
-  icon: {fileID: 0}
-  visualPrefab: {fileID: 5865184678025755381, guid: e64d28a7952f4504baf546e623efcebf, type: 3}
+  icon: {fileID: 21300000, guid: c599b01f00c5dd24bbe26ac05a6ac881, type: 3}
+  visualPrefab: {fileID: 0}
   placeholder: 7
   tint: {r: 0.67, g: 0.3, b: 0.26, a: 1}
