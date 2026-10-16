@@ -31,6 +31,7 @@ namespace Crossroads.Diner
         public DinerVisual dragIcon;
         public DinerVisual[] recipeIcons;
         public Text timeText, revenueText, viewText, stockText, noticeText, helpText, dragLabel, kitchenStatus, resultRevenue, resultStats, resultTelemetry, volumeText;
+        [SerializeField] Text targetStatus, resultOutcome, resultGoal;
         public Image timeFill, processorFill, potFill;
         public List<DinerHitArea> hitAreas=new List<DinerHitArea>();
         public RectTransform layoutRoot;
@@ -62,6 +63,21 @@ namespace Crossroads.Diner
             dragIcon=Visual(dragRoot,"Held art",32,7,84,88);
             dragLabel=Label(dragRoot,"Held name","",6,100,136,40,16,Theme.cream,TextAnchor.MiddleCenter);
             dragRoot.gameObject.SetActive(false);
+            EnsureRulePresentation();
+        }
+        // Update existing layouts additively so custom artwork and positions remain intact.
+        public void EnsureRulePresentation()
+        {
+            targetStatus=revenueText.transform.parent.Find("Revenue caption").GetComponent<Text>();
+            resultOutcome=resultsPanel.transform.Find("Title").GetComponent<Text>();
+            resultGoal=resultsPanel.transform.Find("Revenue caption").GetComponent<Text>();
+            revenueText.fontSize=27;
+            string goal="Earn $"+config.revenueTarget+" by closing.";
+            string capture="Each capture costs other guests "+config.capturePatiencePenalty.ToString("0.#")+"s patience.";
+            readyPanel.transform.Find("Fine print").GetComponent<Text>().text=goal+"  /  "+capture;
+            pausePanel.transform.Find("Pause status").GetComponent<Text>().text="All clocks are frozen. "+goal;
+            tutorialPanel.transform.Find("Pause notice").GetComponent<Text>().text=goal+"  "+capture;
+            tutorialPanel.transform.Find("Pause notice").GetComponent<Text>().fontSize=20;
         }
         public RectTransform Rect(Transform parent,string name,float x,float y,float w,float h)
         {
@@ -367,7 +383,9 @@ namespace Crossroads.Diner
             if(tutorialPanel!=null) tutorialPanel.SetActive(s.State==ShiftState.Paused && TutorialOpen);
             volumeText.text="VOLUME "+Mathf.RoundToInt(volume*100)+"%";
             timeText.text=TimeSpan.FromSeconds(Math.Ceiling(s.Remaining)).ToString(@"mm\:ss"); Fill(timeFill,s.Remaining/config.shiftDuration);
-            timeText.color=s.Remaining<30 ? Theme.danger : Theme.cream; revenueText.text="$"+s.Stats.revenue;
+            timeText.color=s.Remaining<30 ? Theme.danger : Theme.cream; revenueText.text="$"+s.Stats.revenue+" / "+config.revenueTarget;
+            revenueText.color=s.TargetReached ? Theme.mint : Theme.gold;
+            if(targetStatus!=null) targetStatus.text=s.TargetReached ? "TARGET REACHED" : "REVENUE / TARGET";
             viewText.text=s.View==ViewState.Kitchen ? "03  /  KITCHEN" : s.View==ViewState.FrontService ? "02  /  GUEST SERVICE" : "01  /  FRONT COUNTER";
             stockText.text=string.Join("    ",config.ingredients.Select((d,i)=>d.displayName+" "+s.Available[i]));
             helpText.text=s.View==ViewState.Kitchen ? "A / D - Turn to counter     |     Drag captures to table; ingredients to pot" : s.View==ViewState.FrontService ? "S - Back to counter     |     A / D - Turn to kitchen     |     Release on a guest" : "W - Check guests     |     Hold an item + W to carry it     |     A / D - Turn to kitchen";
@@ -416,6 +434,8 @@ namespace Crossroads.Diner
             if(s.State==ShiftState.Results)
             {
                 var stats=s.Stats; resultRevenue.text="$"+stats.revenue;
+                if(resultOutcome!=null) { resultOutcome.text=s.ShiftSucceeded ? "Target reached!" : "Target missed"; resultOutcome.color=s.ShiftSucceeded ? Theme.mint : Theme.danger; }
+                if(resultGoal!=null) resultGoal.text="TARGET $"+config.revenueTarget+(s.ShiftSucceeded ? "  /  SHIFT SUCCESSFUL" : "  /  SHORT BY $"+s.RevenueShortfall);
                 resultStats.text="Orders served   "+stats.served+"               Captures   "+stats.captures+"\n\nWalkouts   "+stats.walkouts+"             Unserved at closing   "+stats.closedUnserved+"\n\nDishes discarded   "+stats.discarded;
                 resultTelemetry.text="Inspections "+stats.inspections+"   /   Invalid drops "+stats.invalidDrops+"   /   Seed "+config.randomSeed+"\n"+(stats.firstServe>=0 ? "First service: "+stats.firstServe.ToString("0.0")+"s" : "No dishes served this shift.");
             }

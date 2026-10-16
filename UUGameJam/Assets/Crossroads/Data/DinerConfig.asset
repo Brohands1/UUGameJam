@@ -41,6 +41,8 @@ MonoBehaviour:
   traySlots: 2
   startingStock: 2
   shiftDuration: 300
+  revenueTarget: 100
+  capturePatiencePenalty: 5
   processingSeconds: 3
   captureCooldown: 0.6
   fullAreaRefillDelay: 1

@@ -63,6 +63,9 @@ namespace Crossroads.Diner
         public float TransitionProgress { get; private set; }
         public float Elapsed { get; private set; }
         public float Remaining => Math.Max(0,Config.shiftDuration-Elapsed);
+        public bool TargetReached => Stats.revenue >= Config.revenueTarget;
+        public bool ShiftSucceeded => State == ShiftState.Results && TargetReached;
+        public int RevenueShortfall => Math.Max(0,Config.revenueTarget-Stats.revenue);
         public Guest[] Guests { get; private set; }
         public CapturedMonster[] Captured { get; private set; }
         public Dish[] Tray { get; private set; }
@@ -153,9 +156,7 @@ namespace Crossroads.Diner
             for(int i=0;i<Guests.Length;i++)
             {
                 var g=Guests[i]; if(g==null) continue;
-                g.patience=Math.Max(0,g.patience-delta);
-                if(g.patience<=0) { g.state=GuestState.WalkedOut; Guests[i]=null; Stats.walkouts++; Notify("A guest walked out.",SoundCue.Walkout); }
-                else if(g.patience<10 && !g.warned) { g.warned=true; Notify("Guest leaving soon!",SoundCue.Walkout); }
+                ReducePatience(i,delta);
             }
             if(Processing!=null)
             {
@@ -195,6 +196,19 @@ namespace Crossroads.Diner
             SpawnRandom(free); arrivalTimer=Config.Phase(Elapsed).interval;
         }
         public void Tick(float delta) { BeginFrame(delta); EndFrame(delta); }
+        void ReducePatience(int slot,float seconds)
+        {
+            var guest=Guests[slot];
+            if(guest==null || guest.state!=GuestState.Waiting || seconds<=0) return;
+            guest.patience=Math.Max(0,guest.patience-seconds);
+            if(guest.patience<=0)
+            {
+                guest.state=GuestState.WalkedOut; Guests[slot]=null; Stats.walkouts++;
+                Notify("A guest walked out.",SoundCue.Walkout);
+            }
+            else if(guest.patience<10 && !guest.warned)
+            { guest.warned=true; Notify("Guest leaving soon!",SoundCue.Walkout); }
+        }
         void Close()
         {
             CancelDrag(); Transitioning=false; State=ShiftState.Results;
@@ -312,7 +326,14 @@ namespace Crossroads.Diner
                     Captured[slot]=new CapturedMonster { id=nextId++,sourceCustomerId=g.id,species=g.species };
                     g.state=GuestState.Captured; Guests[target.index]=null; Stats.captures++; Cooldown=Config.captureCooldown;
                     if(Stats.firstCapture<0) Stats.firstCapture=Elapsed;
-                    Notify("Captured. Take it to the processing table.",SoundCue.Capture);
+                    int witnesses=Guests.Count(other=>other!=null && other.state==GuestState.Waiting);
+                    int previousWalkouts=Stats.walkouts;
+                    for(int i=0;i<Guests.Length;i++) ReducePatience(i,Config.capturePatiencePenalty);
+                    string disturbance=witnesses>0 && Config.capturePatiencePenalty>0
+                        ? " Other guests lost "+Config.capturePatiencePenalty.ToString("0.#")+"s patience."
+                        : " Take it to the processing table.";
+                    if(Stats.walkouts>previousWalkouts) disturbance+=" "+(Stats.walkouts-previousWalkouts)+" walked out.";
+                    Notify("Captured."+disturbance,SoundCue.Capture);
                 }
                 else
                 {

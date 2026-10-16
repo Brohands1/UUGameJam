@@ -2997,7 +2997,7 @@ MonoBehaviour:
       m_Calls: []
   m_FontData:
     m_Font: {fileID: 12800000, guid: f50873f22047d514e988af01db6fd674, type: 3}
-    m_FontSize: 23
+    m_FontSize: 20
     m_FontStyle: 0
     m_BestFit: 0
     m_MinSize: 10
@@ -3008,7 +3008,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: Your shift is paused. Take your time.
+  m_Text: Earn $100 by closing.  Each capture costs other guests 5s patience.
 --- !u!1 &653592945526992193
 GameObject:
   m_ObjectHideFlags: 0
@@ -9341,6 +9341,9 @@ MonoBehaviour:
   resultStats: {fileID: 8780114052757754613}
   resultTelemetry: {fileID: 6438532277662633116}
   volumeText: {fileID: 7769625460664546272}
+  targetStatus: {fileID: 2956977832734526651}
+  resultOutcome: {fileID: 435289873752635504}
+  resultGoal: {fileID: 1284591164543510231}
   timeFill: {fileID: 5899228326943317177}
   processorFill: {fileID: 7966996921368263908}
   potFill: {fileID: 5120326447208201979}
@@ -10179,7 +10182,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: All clocks are frozen. Reserved ingredients stay in the pot.
+  m_Text: All clocks are frozen. Earn $100 by closing.
 --- !u!1 &2218339958804344427
 GameObject:
   m_ObjectHideFlags: 0
@@ -11694,7 +11697,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: 5 MINUTES  /  4 WAITING SEATS  /  EVERY GUEST IS A CHOICE
+  m_Text: Earn $100 by closing.  /  Each capture costs other guests 5s patience.
 --- !u!1 &2559811524287513601
 GameObject:
   m_ObjectHideFlags: 0
@@ -27124,7 +27127,7 @@ MonoBehaviour:
       m_Calls: []
   m_FontData:
     m_Font: {fileID: 12800000, guid: f50873f22047d514e988af01db6fd674, type: 3}
-    m_FontSize: 37
+    m_FontSize: 27
     m_FontStyle: 1
     m_BestFit: 0
     m_MinSize: 10
