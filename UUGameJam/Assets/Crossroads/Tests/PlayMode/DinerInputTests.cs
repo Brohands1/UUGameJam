@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
 using NUnit.Framework;
 using UnityEngine;
@@ -16,14 +17,21 @@ namespace Crossroads.Diner.Tests
         DinerGame game;
         Vector2 cursor;
         bool held;
+        readonly List<InputDevice> externalDevices=new List<InputDevice>();
         DinerSession S => game.Session;
         DinerPresentation UI => game.presentation;
         [UnitySetUp] public IEnumerator Setup()
         {
             SceneManager.LoadScene("CrossroadsDiner"); yield return null; yield return null;
             game=Object.FindFirstObjectByType<DinerGame>(); Assert.IsNotNull(game);
+            // Physical device events must not replace Mouse.current during simulated drags.
+            externalDevices.Clear();
+            foreach(var device in InputSystem.devices.ToArray())
+                if(device.enabled && (device is Mouse || device is Keyboard))
+                { externalDevices.Add(device); InputSystem.DisableDevice(device); }
             mouse=InputSystem.AddDevice<Mouse>(); keyboard=InputSystem.AddDevice<Keyboard>();
             mouse.MakeCurrent(); keyboard.MakeCurrent();
+            Canvas.ForceUpdateCanvases();
             yield return Click(UI.hitAreas.First(h=>h.command=="start").Rect);
             Assert.AreEqual(ShiftState.Running,S.State);
         }
@@ -31,6 +39,8 @@ namespace Crossroads.Diner.Tests
         {
             if(mouse!=null) InputSystem.RemoveDevice(mouse);
             if(keyboard!=null) InputSystem.RemoveDevice(keyboard);
+            foreach(var device in externalDevices) if(device.added) InputSystem.EnableDevice(device);
+            externalDevices.Clear();
             if(game!=null) { Assert.IsNull(S.CheckInvariants()); S.Pause(); }
             yield return null;
         }
@@ -38,12 +48,14 @@ namespace Crossroads.Diner.Tests
         IEnumerator Pointer(RectTransform rect,bool down)
         {
             cursor=Center(rect); held=down;
+            mouse.MakeCurrent();
             InputSystem.QueueStateEvent(mouse,new MouseState { position=cursor }.WithButton(MouseButton.Left,down));
             yield return null; yield return null;
         }
         IEnumerator Click(RectTransform rect) { yield return Pointer(rect,true); yield return Pointer(rect,false); }
         IEnumerator KeyPress(Key key,float wait=.66f)
         {
+            keyboard.MakeCurrent();
             InputSystem.QueueStateEvent(keyboard,new KeyboardState(key)); yield return null; yield return null;
             InputSystem.QueueStateEvent(keyboard,new KeyboardState()); yield return null;
             if(wait>0) yield return new WaitForSecondsRealtime(wait);
@@ -58,7 +70,7 @@ namespace Crossroads.Diner.Tests
             yield return KeyPress(Key.S); Assert.IsFalse(UI.guests[0].orderRoot.activeSelf);
             yield return Pointer(UI.tools[0].hit.Rect,true); Assert.IsNotNull(S.Drag);
             var heldTool=S.Drag; yield return KeyPress(Key.W); Assert.AreSame(heldTool,S.Drag); Assert.IsTrue(UI.dragRoot.gameObject.activeSelf);
-            yield return Pointer(UI.guests[0].target.Rect,false); Assert.AreEqual(1,S.Stats.captures); Assert.IsNull(S.Guests[0]);
+            yield return Pointer(UI.guests[0].target.Rect,false); Assert.AreEqual(1,S.Stats.captures,UI.noticeText.text); Assert.IsNull(S.Guests[0]);
             yield return KeyPress(Key.A); Assert.AreEqual(ViewState.Kitchen,S.View); Assert.IsFalse(UI.guests[2].orderRoot.activeSelf);
             Assert.IsTrue(UI.recipeIcons.All(i=>i.gameObject.activeInHierarchy));
             yield return Drag(UI.captures[0].hit.Rect,UI.processor.hit.Rect); Assert.IsNotNull(S.Processing);

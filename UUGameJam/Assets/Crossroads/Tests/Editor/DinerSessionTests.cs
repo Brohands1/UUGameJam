@@ -90,14 +90,18 @@ namespace Crossroads.Diner.Tests
         [Test] public void T05_V11_WrongToolIsAtomic()
         {
             s.BeginDrag(PayloadType.Tool,1); Go(ViewState.FrontService); var guest=s.Guests[0];
+            var patience=s.Guests.Select(g=>g?.patience ?? 0).ToArray();
             Assert.IsFalse(s.Drop(new DropTarget(TargetType.Guest,0,guest.id)).success); Assert.AreSame(guest,s.Guests[0]);
+            CollectionAssert.AreEqual(patience,s.Guests.Select(g=>g?.patience ?? 0).ToArray());
             Assert.AreEqual(0,s.Stats.captures); Assert.AreEqual(0,s.Captured.Count(c=>c!=null));
         }
         [Test] public void T06_CaptureQueueFullKeepsOrder()
         {
             Capture(0); Capture(1); Go(ViewState.FrontCounter); var guest=s.Guests[2];
             s.BeginDrag(PayloadType.Tool,2); Go(ViewState.FrontService);
+            float patience=guest.patience;
             var result=s.Drop(new DropTarget(TargetType.Guest,2,guest.id)); Assert.IsFalse(result.success); StringAssert.Contains("full",result.reason);
+            Assert.AreEqual(patience,guest.patience);
             Assert.AreSame(guest,s.Guests[2]); Assert.AreEqual(2,s.Stats.captures);
         }
         [Test] public void T07_RepeatedCaptureCannotDuplicate()
@@ -200,6 +204,66 @@ namespace Crossroads.Diner.Tests
                 Assert.IsNull(s.Drag); Assert.IsNull(s.Reserved); Assert.AreEqual(PotState.Idle,s.Pot); Assert.AreEqual(3,s.GuestHistory.Count);
                 CollectionAssert.AreEqual(new[]{2,2,2},s.Available);
             }
+        }
+        [TestCase(99,false,1)]
+        [TestCase(100,true,0)]
+        [TestCase(114,true,0)]
+        public void RevenueTargetIsEvaluatedAtClosingAndResets(int payment,bool success,int shortfall)
+        {
+            Assert.AreEqual(100,config.revenueTarget);
+            Cook(0,1); Go(ViewState.FrontCounter);
+            var guest=s.Guests[2]; guest.quotedPrice=payment;
+            s.BeginDrag(PayloadType.Dish,0); Go(ViewState.FrontService);
+            var other=s.Guests[0]; float patience=other.patience;
+            Assert.IsTrue(s.Drop(new DropTarget(TargetType.Guest,2,guest.id)).success);
+            Assert.AreEqual(patience,other.patience,"Serving must not frighten other guests.");
+            Assert.AreEqual(success,s.TargetReached); Assert.IsFalse(s.ShiftSucceeded);
+            Assert.AreEqual(ShiftState.Running,s.State,"Reaching the target must not end the shift early.");
+            s.Tick(s.Remaining);
+            Assert.AreEqual(success,s.ShiftSucceeded); Assert.AreEqual(shortfall,s.RevenueShortfall);
+            Assert.IsNull(s.CheckInvariants());
+            s.StartShift(); Assert.IsFalse(s.TargetReached); Assert.IsFalse(s.ShiftSucceeded); Assert.AreEqual(100,s.RevenueShortfall);
+        }
+        [TestCase(5f)]
+        [TestCase(0f)]
+        [TestCase(8f)]
+        public void SuccessfulCaptureAppliesConfiguredPenaltyExactlyOnce(float penalty)
+        {
+            config.capturePatiencePenalty=penalty;
+            s.BeginDrag(PayloadType.Tool,0); Go(ViewState.FrontService);
+            var target=s.Guests[0]; var witnesses=s.Guests.Where(g=>g!=null && g!=target).ToArray();
+            var before=witnesses.Select(g=>g.patience).ToArray(); float targetBefore=target.patience;
+            Assert.IsTrue(s.CanDrop(new DropTarget(TargetType.Guest,0,target.id)).success);
+            Assert.IsTrue(s.Drop(new DropTarget(TargetType.Guest,0,target.id)).success);
+            Assert.AreEqual(targetBefore,target.patience); Assert.AreEqual(GuestState.Captured,target.state);
+            for(int i=0;i<witnesses.Length;i++) Assert.AreEqual(before[i]-penalty,witnesses[i].patience,.001f);
+            Assert.IsFalse(s.Drop(new DropTarget(TargetType.Guest,0,target.id)).success);
+            for(int i=0;i<witnesses.Length;i++) Assert.AreEqual(before[i]-penalty,witnesses[i].patience,.001f);
+            s.Pause(); s.Tick(30);
+            for(int i=0;i<witnesses.Length;i++) Assert.AreEqual(before[i]-penalty,witnesses[i].patience,.001f);
+        }
+        [Test] public void CaptureCanCauseImmediateWalkoutAndLowPatienceWarning()
+        {
+            config.capturePatiencePenalty=5;
+            s.BeginDrag(PayloadType.Tool,0); Go(ViewState.FrontService);
+            var leaving=s.Guests[1]; var warning=s.Guests[2];
+            leaving.patience=4; warning.patience=12;
+            Assert.IsTrue(s.Drop(new DropTarget(TargetType.Guest,0,s.Guests[0].id)).success);
+            Assert.AreEqual(0,leaving.patience); Assert.AreEqual(GuestState.WalkedOut,leaving.state);
+            Assert.IsNull(s.Guests[1]); Assert.AreEqual(1,s.Stats.walkouts);
+            Assert.AreEqual(7,warning.patience); Assert.IsTrue(warning.warned);
+            s.Tick(.1f); Assert.AreEqual(1,s.Stats.walkouts);
+            s.Tick(10); var newcomer=s.Guests.First(g=>g!=null);
+            Assert.AreEqual(config.Phase(s.Elapsed).patience,newcomer.patience,"New arrivals must not inherit past capture penalties.");
+        }
+        [Test] public void CapturePenaltiesAccumulateForRemainingWitnesses()
+        {
+            Capture(0); Go(ViewState.FrontCounter);
+            s.BeginDrag(PayloadType.Tool,1); Go(ViewState.FrontService);
+            var witness=s.Guests[2]; float patience=witness.patience;
+            Assert.IsTrue(s.Drop(new DropTarget(TargetType.Guest,1,s.Guests[1].id)).success);
+            Assert.AreEqual(patience-config.capturePatiencePenalty,witness.patience,.001f);
+            Assert.AreEqual(2,s.Stats.captures);
         }
         [Test] public void T21_SeededFuzzMaintainsAllConservationLawsForThreeFullShifts()
         {

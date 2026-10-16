@@ -25,6 +25,8 @@ namespace Crossroads.Diner
         [Min(1)] public int waitingSlots = 4, capturedSlots = 2, traySlots = 2;
         [Min(0)] public int startingStock = 2;
         [Min(1)] public float shiftDuration = 300;
+        [Min(1)] public int revenueTarget = 100;
+        [Min(0)] public float capturePatiencePenalty = 5;
         [Min(.1f)] public float processingSeconds = 3;
         [Min(0)] public float captureCooldown = .6f;
         [Min(.1f)] public float fullAreaRefillDelay = 1;
@@ -40,6 +42,7 @@ namespace Crossroads.Diner
         }
         public string ValidateConfiguration()
         {
+            if(revenueTarget < 1 || capturePatiencePenalty < 0 || float.IsNaN(capturePatiencePenalty) || float.IsInfinity(capturePatiencePenalty)) return "Invalid revenue target or capture patience penalty.";
             if(theme == null || ingredients == null || ingredients.Length == 0 || monsters == null || monsters.Length == 0 || recipes == null || recipes.Length == 0 || tools == null || tools.Length == 0) return "Missing catalog or theme.";
             if(waitingSlots < 1 || capturedSlots < 1 || traySlots < 1 || shiftDuration <= 0 || processingSeconds <= 0 || startingStock < 0 || turnSeconds <= 0 || pushSeconds <= 0) return "Invalid capacity or timing.";
             if(phases == null || phases.Length == 0 || phases[0].startsAt != 0) return "Arrival phases must begin at zero.";

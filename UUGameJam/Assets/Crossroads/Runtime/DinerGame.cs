@@ -25,6 +25,7 @@ namespace Crossroads.Diner
             catch(Exception exception) { Debug.LogException(exception); enabled=false; return; }
             if(presentation.layoutRoot==null) presentation.Build();
             presentation.EnsurePauseTutorial();
+            presentation.EnsureRulePresentation();
             effects=gameObject.AddComponent<AudioSource>(); effects.playOnAwake=false; effects.spatialBlend=0;
             ambience=gameObject.AddComponent<AudioSource>(); ambience.playOnAwake=false; ambience.loop=true; ambience.spatialBlend=0;
             Volume=PlayerPrefs.GetFloat("Crossroads.Volume",config.theme.defaultVolume);
